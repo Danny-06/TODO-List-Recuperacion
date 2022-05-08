@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity"
+    android:background="#222"
     >
 
         <TextView
@@ -26,7 +27,7 @@
             app:layout_constraintBottom_toTopOf="@id/loginBtn"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="Desarrollado por Daniel Fabián El Belaizi"
+            android:text="Developed by Daniel Fabián El Belaizi, 2º DAM"
             />
 
         <Button
@@ -34,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login with Google"
+            app:icon="@drawable/googleg_standard_color_18"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

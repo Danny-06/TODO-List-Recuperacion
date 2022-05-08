@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "436301323196",
+    "project_id": "todo-list-android-19456",
+    "storage_bucket": "todo-list-android-19456.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436301323196:android:242eaf49fa97c753d929b9",
+        "android_client_info": {
+          "package_name": "com.example.todolistrecuperacion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436301323196-1en4tf33du448s73ts5u76uev0ub03lv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAXiztT_eR3wcGwCZuZBi4mdQoge9oBbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436301323196-1en4tf33du448s73ts5u76uev0ub03lv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
