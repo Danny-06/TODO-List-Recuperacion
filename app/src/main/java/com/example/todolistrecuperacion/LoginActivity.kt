@@ -1,5 +1,6 @@
 package com.example.todolistrecuperacion
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.ActivityResult
 import android.os.Bundle
@@ -34,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
     this.binding = ActivityLoginBinding.inflate(layoutInflater)
 
-    setContentView(this.binding.root)
+    this.setContentView(this.binding.root)
 
     this.fireAuth = Firebase.auth
 
@@ -49,8 +50,9 @@ class LoginActivity : AppCompatActivity() {
     Snackbar.make(this.binding.root, message, duration).show()
   }
 
-  private fun goToMainActivity() {
-
+  private fun goToMain() {
+    val intent = Intent(this, MainActivity::class.java)
+    this.startActivity(intent)
   }
 
   private fun loginWithGoogle() {
@@ -77,16 +79,21 @@ class LoginActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(this.account.idToken, null)
 
         this.fireAuth.signInWithCredential(credential)
-          .addOnCompleteListener(this) {
+          .addOnCompleteListener(this) { it ->
 
             if (it.isSuccessful) {
 
+              // Check if there is a user already stored
               this.db.collection("users")
                 .document(this.fireAuth.uid.toString())
                 .get()
                 .addOnCompleteListener {
-                  if (it.isSuccessful) {
-                    this.goToMainActivity()
+                  // 'toObject' can throw an error if the 'data class' does not defined initial values for the properties
+                  // https://stackoverflow.com/questions/38802269/firebase-user-is-missing-a-constructor-with-no-arguments
+                  val user = it.result.toObject(User::class.java)
+
+                  if (user != null) {
+                    this.goToMain()
                   } else {
                     val user = User(
                       this.fireAuth.uid.toString(),
@@ -99,7 +106,9 @@ class LoginActivity : AppCompatActivity() {
                       .set(user)
                       .addOnCompleteListener {
                         if (it.isSuccessful) {
-                          this.goToMainActivity()
+                          this.goToMain()
+                        } else {
+                          this.snackbar("An error ocurred when saving user data in the database")
                         }
                       }
                   }
