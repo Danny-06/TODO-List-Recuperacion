@@ -16,6 +16,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.android.gms.tasks.Task as GoogleTask
 
 
 class LoginActivity : AppCompatActivity() {
@@ -35,11 +36,25 @@ class LoginActivity : AppCompatActivity() {
 
     this.binding = ActivityLoginBinding.inflate(layoutInflater)
 
+
     this.setContentView(this.binding.root)
+
 
     this.fireAuth = Firebase.auth
 
+    // Check if intent was sent by an activity
+    if (this.intent?.getStringExtra("Source") != null) {
+      this.fireAuth.signOut()
+    }
 
+
+    // Redirect to MainActivity if user is logged
+    if (this.fireAuth.currentUser != null) {
+      this.goToMain()
+    }
+
+
+    // Login with Google when click the button
     this.binding.loginBtn.setOnClickListener {
       this.loginWithGoogle()
     }
@@ -101,16 +116,16 @@ class LoginActivity : AppCompatActivity() {
                       this.account.photoUrl.toString()
                     )
 
-                    this.db.collection("users")
-                      .document(this.fireAuth.uid.toString())
-                      .set(user)
-                      .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                          this.goToMain()
-                        } else {
-                          this.snackbar("An error ocurred when saving user data in the database")
-                        }
+                    this.addUser(user)
+                    .addOnCompleteListener {
+                      if (it.isSuccessful) {
+                        this.goToMain()
+                        this.finish()
+                      } else {
+                        this.snackbar("An error ocurred when saving user data in the database")
                       }
+                    }
+
                   }
                 }
             } else {
@@ -122,8 +137,14 @@ class LoginActivity : AppCompatActivity() {
         this.snackbar("An error ocurred in Google Play service")
       }
     } else {
-      this.snackbar("An error ocurred")
+      this.snackbar("No account was chosen or there was an error")
     }
+  }
+
+  private fun addUser(user: User): GoogleTask<Void> {
+    return this.db.collection("users")
+           .document(this.fireAuth.uid.toString())
+           .set(user)
   }
 
 }

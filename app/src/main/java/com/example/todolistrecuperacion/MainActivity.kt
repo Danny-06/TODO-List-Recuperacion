@@ -1,24 +1,23 @@
 package com.example.todolistrecuperacion
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.todolistrecuperacion.databinding.ActivityMainBinding
-import com.example.todolistrecuperacion.models.User
+import com.example.todolistrecuperacion.fragments.ProfileFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var binding: ActivityMainBinding
-  private lateinit var user: User
+  lateinit var binding: ActivityMainBinding
 
   private lateinit var fireAuth: FirebaseAuth
 
-  private val db: FirebaseFirestore = Firebase.firestore
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -27,17 +26,54 @@ class MainActivity : AppCompatActivity() {
 
     this.setContentView(this.binding.root)
 
-    this.fireAuth = Firebase.auth
+//    this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//    this.supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#444444")))
+  }
 
-    this.db.collection("users")
-      .document(this.fireAuth.uid.toString())
-      .get()
-      .addOnCompleteListener {
-        if (it.isSuccessful) {
-          this.user = it.result.toObject(User::class.java)!!
-          this.binding.userName.text = this.user.name
-        }
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    menu.add("Profile")
+    menu.add("Log out")
+
+    return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    when(item.title) {
+
+      "Profile" -> {
+        this.goToFragment(ProfileFragment())
       }
+
+      "Log out" -> {
+//        this.fireAuth.signOut()
+        this.finish()
+        this.goToLoginActivity()
+      }
+
+    }
+
+    return super.onOptionsItemSelected(item)
+  }
+
+  override fun onBackPressed() {
+//    super.onBackPressed()
+  }
+
+  private fun snackbar(message: String, duration: Int = 2000) {
+    Snackbar.make(this.binding.root, message, duration).show()
+  }
+
+  private fun goToLoginActivity() {
+    val intent = Intent(this, LoginActivity::class.java)
+    intent.putExtra("Source", "MainActivity")
+    this.startActivity(intent)
+  }
+
+  private fun goToFragment(fragmentInstance: Fragment) {
+    this.supportFragmentManager.beginTransaction().apply {
+      this.replace(R.id.nav_host_fragment_content_main, fragmentInstance)
+      this.commit()
+    }
   }
 
 }
