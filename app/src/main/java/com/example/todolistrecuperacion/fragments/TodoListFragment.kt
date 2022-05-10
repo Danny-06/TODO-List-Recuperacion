@@ -2,10 +2,8 @@ package com.example.todolistrecuperacion.fragments
 
 import RecyclerViewAdapter
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -44,6 +42,8 @@ class TodoListFragment : Fragment() {
 
   private lateinit var taskAdapter: RecyclerViewAdapter<Task>
 
+  private var taskToDelete: Task? = null
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     this.binding = FragmentTodoListBinding.inflate(layoutInflater)
     return this.binding.root
@@ -68,6 +68,21 @@ class TodoListFragment : Fragment() {
       this.addTask()
     }
 
+  }
+
+  override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+    super.onCreateContextMenu(menu, v, menuInfo)
+
+    this.activity?.menuInflater?.inflate(R.menu.task_menu, menu)
+  }
+
+  override fun onContextItemSelected(item: MenuItem): Boolean {
+    if (item.title == "Delete Task") {
+      this.deleteTask(this.taskToDelete!!)
+      .addOnCompleteListener { this.refreshTasks() }
+    }
+
+    return true
   }
 
 
@@ -97,8 +112,9 @@ class TodoListFragment : Fragment() {
     return this.db.document(taskPath).set(task)
   }
 
-  private fun deleteTask(task: Task) {
-
+  private fun deleteTask(task: Task): GoogleTask<Void> {
+    val taskPath = "users/${this.fireAuth.uid}/tasks/${task.id}"
+    return this.db.document(taskPath).delete()
   }
 
   private fun displayTasks(tasks: ArrayList<Task>) {
@@ -109,6 +125,8 @@ class TodoListFragment : Fragment() {
     val taskPendingDrawable = R.drawable.ic_outline_push_pin_24
 
     this.taskAdapter.setOnBindViewHolderListener { taskView, task, index ->
+      this.registerForContextMenu(taskView)
+
       val taskBinding = ItemTaskBinding.bind(taskView)
 
       taskBinding.taskDescription.text = task.text
@@ -134,6 +152,8 @@ class TodoListFragment : Fragment() {
     }
     this.taskAdapter.setOnItemLongClickListener { taskView, task, index ->
       if (taskView == null) return@setOnItemLongClickListener(true)
+
+      this.taskToDelete = task
 
       taskView.showContextMenu()
 
@@ -182,12 +202,9 @@ class TodoListFragment : Fragment() {
       if (it.isSuccessful) {
         val tasks = it.result.toObjects(Task::class.java) as ArrayList
 
-        if (tasks.size != 0) {
-          this.displayTasks(tasks)
-          this.binding.noTaskMessage.isVisible = false
-        }
-        else
-          this.binding.noTaskMessage.isVisible = true
+        this.displayTasks(tasks)
+
+        this.binding.noTaskMessage.isVisible = tasks.size == 0
       }
     }
   }

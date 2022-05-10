@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
       }
 
       "Log out" -> {
-//        this.fireAuth.signOut()
         this.finish()
         this.goToLoginActivity()
       }
@@ -55,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
+  // Avoid coming back to previous activity
   override fun onBackPressed() {
 //    super.onBackPressed()
   }
