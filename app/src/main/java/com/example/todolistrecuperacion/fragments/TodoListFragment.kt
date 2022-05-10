@@ -42,8 +42,6 @@ class TodoListFragment : Fragment() {
 
   private lateinit var taskAdapter: RecyclerViewAdapter<Task>
 
-  // Task that will be deleted when using the context menu
-  private var taskToDelete: Task? = null
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     this.binding = FragmentTodoListBinding.inflate(layoutInflater)
@@ -72,25 +70,19 @@ class TodoListFragment : Fragment() {
   }
 
 
-  override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
-    super.onCreateContextMenu(menu, v, menuInfo)
-
-    this.activity?.menuInflater?.inflate(R.menu.task_menu, menu)
-  }
-
-  override fun onContextItemSelected(item: MenuItem): Boolean {
-    if (item.title == "Delete Task") {
-      if (this.taskToDelete == null) return true
-
-      this.deleteTask(this.taskToDelete!!)
-      .addOnCompleteListener {
-        this.taskAdapter.removeItem(this.taskToDelete!!)
-        this.binding.noTaskMessage.isVisible = this.taskAdapter.itemCount == 0
-      }
-    }
-
-    return true
-  }
+//  override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+//    super.onCreateContextMenu(menu, v, menuInfo)
+//
+//    this.activity?.menuInflater?.inflate(R.menu.task_menu, menu)
+//  }
+//
+//  override fun onContextItemSelected(item: MenuItem): Boolean {
+//    if (item.title == "Delete Task") {
+//
+//    }
+//
+//    return true
+//  }
 
 
 
@@ -163,7 +155,15 @@ class TodoListFragment : Fragment() {
 
       taskView.showContextMenu()
 
-      this.taskToDelete = task
+      AlertDialog.Builder(this.requireContext(), androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
+      .setTitle("Are you sure you want to delete this task?")
+      .setPositiveButton("Ok") { _, _ ->
+        this.deleteTask(task)
+        this.taskAdapter.removeItem(task)
+      }
+      .setNegativeButton("Cancel") {_, _ -> }
+      .show()
+
 
       true
     }
@@ -176,7 +176,7 @@ class TodoListFragment : Fragment() {
     val taskFormView = View.inflate(this.context, R.layout.task_form, null)
     val taskFormBinding = TaskFormBinding.bind(taskFormView)
 
-    AlertDialog.Builder(this.requireContext(), androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dark)
+    AlertDialog.Builder(this.requireContext(), androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
       .setTitle("Task Form")
       .setView(taskFormView)
       .setPositiveButton("Save") { dialogInterface, n ->
