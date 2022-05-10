@@ -63,7 +63,7 @@ class TodoListFragment : Fragment() {
       }
     }
 
-    this.refreshTasks()
+    this.initTasks()
 
     this.binding.addTaskBtn.setOnClickListener {
       this.addTask()
@@ -207,7 +207,7 @@ class TodoListFragment : Fragment() {
       .create().show()
   }
 
-  private fun refreshTasks() {
+  private fun initTasks() {
     this.getTasks()
     .addOnCompleteListener {
       if (it.isSuccessful) {
