@@ -112,7 +112,8 @@ class LoginActivity : AppCompatActivity() {
                   } else {
                     val user = User(
                       this.fireAuth.uid.toString(),
-                      this.account.displayName.toString(),
+                      this.account.givenName.toString(),
+                      this.account.familyName.toString(),
                       this.account.photoUrl.toString()
                     )
 

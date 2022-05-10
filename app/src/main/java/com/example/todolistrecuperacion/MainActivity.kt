@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.todolistrecuperacion.databinding.ActivityMainBinding
 import com.example.todolistrecuperacion.fragments.ProfileFragment
+import com.example.todolistrecuperacion.fragments.TodoListFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
@@ -17,7 +18,6 @@ class MainActivity : AppCompatActivity() {
   lateinit var binding: ActivityMainBinding
 
   private lateinit var fireAuth: FirebaseAuth
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -31,14 +31,21 @@ class MainActivity : AppCompatActivity() {
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    menu.add("TODO List")
     menu.add("Profile")
     menu.add("Log out")
+
+//    this.currentFragment.tag
 
     return super.onCreateOptionsMenu(menu)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when(item.title) {
+
+      "TODO List" -> {
+        this.goToFragment(TodoListFragment())
+      }
 
       "Profile" -> {
         this.goToFragment(ProfileFragment())

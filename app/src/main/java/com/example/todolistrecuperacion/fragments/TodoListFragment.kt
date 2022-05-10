@@ -42,6 +42,7 @@ class TodoListFragment : Fragment() {
 
   private lateinit var taskAdapter: RecyclerViewAdapter<Task>
 
+  // Task that will be deleted when using the context menu
   private var taskToDelete: Task? = null
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,6 +71,7 @@ class TodoListFragment : Fragment() {
 
   }
 
+
   override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
     super.onCreateContextMenu(menu, v, menuInfo)
 
@@ -78,12 +80,18 @@ class TodoListFragment : Fragment() {
 
   override fun onContextItemSelected(item: MenuItem): Boolean {
     if (item.title == "Delete Task") {
+      if (this.taskToDelete == null) return true
+
       this.deleteTask(this.taskToDelete!!)
-      .addOnCompleteListener { this.refreshTasks() }
+      .addOnCompleteListener {
+        this.taskAdapter.removeItem(this.taskToDelete!!)
+        this.binding.noTaskMessage.isVisible = this.taskAdapter.itemCount == 0
+      }
     }
 
     return true
   }
+
 
 
   private fun snackbar(message: String, duration: Int = 2000) {
@@ -153,9 +161,9 @@ class TodoListFragment : Fragment() {
     this.taskAdapter.setOnItemLongClickListener { taskView, task, index ->
       if (taskView == null) return@setOnItemLongClickListener(true)
 
-      this.taskToDelete = task
-
       taskView.showContextMenu()
+
+      this.taskToDelete = task
 
       true
     }
@@ -184,7 +192,10 @@ class TodoListFragment : Fragment() {
 
               task.id = it.getResult().id
               this.updateTask(task)
-              .addOnCompleteListener { this.refreshTasks() }
+              .addOnCompleteListener {
+                this.taskAdapter.addItem(task)
+                this.binding.noTaskMessage.isVisible = this.taskAdapter.itemCount == 0
+              }
             } else {
               this.snackbar("There was an error creating the task, try again later")
             }
