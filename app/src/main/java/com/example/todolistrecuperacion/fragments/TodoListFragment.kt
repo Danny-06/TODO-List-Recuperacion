@@ -164,7 +164,6 @@ class TodoListFragment : Fragment() {
       .setNegativeButton("Cancel") {_, _ -> }
       .show()
 
-
       true
     }
 
