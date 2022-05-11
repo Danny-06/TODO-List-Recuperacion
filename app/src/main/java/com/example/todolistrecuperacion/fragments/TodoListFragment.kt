@@ -59,9 +59,9 @@ class TodoListFragment : Fragment() {
       if (it.isSuccessful) {
         this.user = it.result.toObject(User::class.java)!!
       }
-    }
 
-    this.initTasks()
+      this.initTasks()
+    }
 
     this.binding.addTaskBtn.setOnClickListener {
       this.addTask()
@@ -160,7 +160,7 @@ class TodoListFragment : Fragment() {
         this.deleteTask(task)
         this.taskAdapter.removeItem(task)
       }
-      .setNegativeButton("Cancel") {_, _ -> }
+      .setNegativeButton("Cancel") { _, _ -> }
       .show()
 
       true
