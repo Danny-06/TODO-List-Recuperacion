@@ -128,7 +128,6 @@ class ProfileFragment: Fragment() {
           it.result.toString()
         )
 
-
         this.updateUser(user)
         .addOnCompleteListener {
           if (!it.isSuccessful) {
