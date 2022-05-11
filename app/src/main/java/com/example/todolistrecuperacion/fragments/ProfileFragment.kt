@@ -68,7 +68,8 @@ class ProfileFragment: Fragment() {
 
       this.user = it.result.toObject(User::class.java)!!
 
-      this.binding.userName.text = "${this.user.name} ${this.user.lastname}"
+      val lastName = if (this.user.lastname == "null") "" else this.user.lastname
+      this.binding.userName.text = "${this.user.name} ${lastName}"
       this.binding.userEmail.text = this.fireAuth.currentUser?.email
 
       if (this.user.image.isEmpty()) return@addOnCompleteListener
