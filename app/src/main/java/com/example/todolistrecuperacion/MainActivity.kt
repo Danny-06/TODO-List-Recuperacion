@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
     menu.add("Profile")
     menu.add("Log out")
 
-//    this.currentFragment.tag
-
     return super.onCreateOptionsMenu(menu)
   }
 

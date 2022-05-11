@@ -85,7 +85,6 @@ class TodoListFragment : Fragment() {
 //  }
 
 
-
   private fun snackbar(message: String, duration: Int = 2000) {
     val activity = this.activity as MainActivity
     Snackbar.make(activity.binding.root, message, duration).show()
