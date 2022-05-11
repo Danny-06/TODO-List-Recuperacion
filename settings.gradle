@@ -14,3 +14,4 @@ pluginManagement {
 //}
 rootProject.name = "TODO List Recuperacion"
 include ':app'
+include ':LoaderImageView'
