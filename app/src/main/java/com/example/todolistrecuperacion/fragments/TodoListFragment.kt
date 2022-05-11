@@ -32,7 +32,7 @@ import kotlin.collections.ArrayList
 import com.google.android.gms.tasks.Task as GoogleTask
 
 
-class TodoListFragment : Fragment() {
+class TodoListFragment: Fragment() {
 
   private lateinit var binding: FragmentTodoListBinding
 
